@@ -306,7 +306,7 @@ var Fail = true;
 var continueFail = false;
 var minus = 10;
 
-var moneytime = 1;
+var moneytime = 0;
 
 // TRAVEL TIME 
 // var phase = 5 - moneytime; // 75 / 45 / 20 / 5
