@@ -1,0 +1,11 @@
+{
+  "projects": {
+    "default": "semantic-fluency-patients"
+  },
+  "targets": {},
+  "etags": {
+    "semantic-fluency-patients": {
+      "extensionInstances": {}
+    }
+  }
+}

@@ -1,0 +1,5 @@
+{"numtrials": 24, 
+	"items": {"1": "ANIMALS", "2": "BODY PARTS", "3": "OCCUPATIONS", "4": "HOBBIES", "5": "CLOTHING", "6": "FRUITS", "7": "OFFICE SUPPLIES", "8": "LIQUIDS", "9": "MUSICAL INSTRUMENTS", "10": "VEGETABLES", "11": "MEANS OF TRANSPORT", "12": "SPORTS", "13": "THINGS FOUND IN KITCHENS", "14": "TOOLS", "15": "HOME APPLIANCES", "16": "HOLIDAYS", "17": "MEDICAL CONDITIONS", "18": "NATURAL ENVIRONMENT", "19": "FURNITURE", "20": "NON-FOOD ITEMS FOUND IN SUPERMARKET", "21": "FLOWERS", "22": "ACCOMODATIONS", "23": "TECHNOLOGY GADGETS & DEVICES", "24": "TOYS"}, 
+	"orderA": {"1": 13, "2": 22, "3": 1, "4": 9, "5": 8, "6": 20, "7": 21, "8": 4, "9": 11, "10": 6, "11": 17, "12": 16, "13": 14, "14": 23, "15": 3, "16": 10, "17": 5, "18": 18, "19": 24, "20": 2, "21": 12, "22": 7, "23": 19, "24": 15},
+	"travel" : {"1": 30, "2": 10}
+}

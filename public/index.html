@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="
+    default-src * data: blob: ws: wss: gap://ready file://*;
+    style-src * 'unsafe-inline'; 
+    script-src * 'unsafe-inline' 'unsafe-eval';
+    connect-src * ws: wss:;" />
+    <title>Memory recalling Experiment</title>
+
+    <link rel="stylesheet" href="/static/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/static/style.css" type="text/css" />
+
+    <!-- update the version number as needed -->
+    <script src="/__/firebase/6.6.1/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script src="/__/firebase/6.6.1/firebase-auth.js"></script>
+    <script src="/__/firebase/6.6.1/firebase-database.js"></script>
+    <script src="/__/firebase/6.6.1/firebase-firestore.js"></script>
+    <script src="/__/firebase/6.6.1/firebase-messaging.js"></script>
+    <script src="/__/firebase/6.6.1/firebase-storage.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script src="/__/firebase/init.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.min.js"></script>
+
+
+
+     <!-- Consent Page-->
+    <div id="container-consent">
+      <div id="consent">
+          <h1><b><u>Welcome</u></b></h1>
+          <h2>but we need your consent... </h2> 
+          <hr />
+          <div class="legal well">
+              <p> 
+              We would like to invite you the take part in the following study named "Memory Recall Experiment".
+              </p>
+              <p>
+                <br>This will take approximately 40 minutes, and you can earn a minimum of $15 as the participation fee. <strong>The amount you receive will depend on your performance.</strong><br><br>
+                Please understand that we <em>reserve the right to not compensate entries</em> that fail to follow instructions.
+                <br>  
+              </p>
+              <div id="consentForm">
+                  <!-- **TODO** Replace the consent form with your own consent form -->
+                  <iframe frameborder="1" id="consentForm" src="https://docs.google.com/document/d/1mGaDVCSqrze2WYKNxCmf8wjhhwYjHTh9/preview"></iframe>
+              </div>
+              <button type="button" class="btn btn-default btn-sm" onClick="window.print();">
+              <span class="glyphicon glyphicon-print"></span> Print a copy of this
+              </button>
+          </div>
+          <hr />
+          <h4>If you agree and consent to these terms, please click "I Agree" to continue. Otherwise, please exit the page and return this HIT.</h4>
+          <br />
+          <center>
+              <button type="button" class="btn btn-danger btn-lg" onClick="return show('final-page', 'container-consent');">
+              <span class="glyphicon glyphicon-ban-circle"></span> I do <u><b>NOT</b></u> consent to these terms.
+              </button>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <button type="button" class="btn btn-primary btn-lg" onClick="return show('container-instructions2', 'container-consent');">
+              <span class="glyphicon glyphicon-ok"></span> I Agree 
+              </button>
+          </center>
+      </div>
+    </div>
+     
+    <!-- Instruction-->
+	<!--Skip this now because it's not online -->
+    <div id="container-instructions1" style="display:none; padding: 50px">
+        <h1>Welcome to the Memory Recall Experiment!</h1>
+        <hr>
+      	<div class="instructions well">
+            <p> 
+                If you are not using Google Chrome, please reopen the link in Chrome. The experiment won't function properly on other browsers.
+            </p>
+            <br>
+            <p>
+                <strong>Note: We will verify your browser!</strong>
+            </p>
+            <p>
+                <br>Please share your <strong>entire</strong> screen and give the remote control permission to the instructor.
+            </p>
+            <p>
+                <br>Your voice will be recorded in this task, so please ensure you are in a quiet environment and speak clearly. 
+            </p>
+            <p>
+                <br>At the beginning of the main test, a notification will appear in the upper-left corner asking for permission to use your microphone. Please click '<strong>Allow</strong>' to proceed.
+            </p>
+            <br>
+            <div>
+                <center>
+                    <img src="images/notify.png" alt="Instruction Image" style="width:60%">
+                </center>
+            </div>
+            <br>
+            <p>
+                Please also double-check the microphone permissions on your computer: Go to Settings >> Security & Privacy >> Microphone.
+            </p>
+            <p>
+                <br>Click "Next" to see the instructions in the next page.
+            </p>
+		</div>
+        <hr>
+        <center>
+              <button type="button" class="btn btn-primary btn-lg" onClick="return show('container-consent', 'container-instructions1');">
+              <span class="glyphicon glyphicon-arrow-left"></span> Back 
+              </button>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <button type="button" class="btn btn-primary btn-lg" onClick="return show('container-instructions2', 'container-instructions1');">
+              <span class="glyphicon glyphicon-arrow-right"></span> Next
+              </button>
+          </center>
+    </div>
+
+    <div id="container-instructions2" style="display:none; padding: 50px">
+        <h1>The Task</h1>
+        <hr>
+      	<div class="instructions well">
+			<h2>
+            	<p>In this study, we will test your ability to recall words based on different prompts across a series of trials. </p>
+			</h2>
+			
+			<p>
+                <br>On each trial, you will see a word or phrase prompt indicating a <em>category</em>. 
+            </p>
+            <p>
+                <br>As soon as you see the prompt, you should start verbally naming words that belong to the category. 
+            </p>
+			
+            <p>
+                <br> You can decide, at any time, to move on to the next trial to recall words from a new category; once left, you cannot return to a category. 
+                <!-- When you'd like to switch to a new category, press the “<span style="color: red;">ENTER</span>” key, upon which a new category label will appear after a time delay. You must now recall words belonging to the new category.    -->
+            </p>
+			
+			<p> <br>Your voice will be recorded, therefore, please speak clearly so that all the words you say are recorded. </p>
+
+
+        </div>
+        <hr>
+        <center>
+              <button type="button" class="btn btn-primary btn-lg" onClick="return show('container-consent', 'container-instructions2');">
+              <span class="glyphicon glyphicon-arrow-left"></span> Back 
+              </button>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <button type="button" class="btn btn-primary btn-lg" onClick="return show('container-instructions3', 'container-instructions2');">
+              <span class="glyphicon glyphicon-arrow-right"></span> Next
+              </button>
+          </center>
+    </div>
+    
+    <div id="container-instructions3" style="display:none; padding: 50px">
+            <h1>Scoring Rules</h1>
+            <hr>
+        <div class="instructions well">            
+			
+            <p>
+				<br> You will receive a score of one point for each valid recall for a category. If a recall isn't valid, you won't receive a point.
+			</p>
+			<p>
+				<br> To ensure the recalled word is valid, please follow the following rules:
+				<p>
+					<ol>
+						<li>Say words you think belong to a category, not just words that are related. (e.g, for category "TREES" valid recalls are "Sequoia" or "apple tree" but not "Leaves" or "Trunk") </li>
+						<li>DO NOT repeat words within a category</li>
+						<li>DO NOT say variations of the same word (e.g., for category "FOODS", "apple" and "apples" will not be considered as two separate valid recalls).</li>
+					<ol>
+				</p>
+            </p>
+
+        </div>
+        <hr>
+        <center>
+              <button type="button" class="btn btn-primary btn-lg" onClick="return show('container-instructions2', 'container-instructions3');">
+              <span class="glyphicon glyphicon-arrow-left"></span> Back 
+              </button>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <button type="button" class="btn btn-primary btn-lg" onClick="return show('container-instructions4', 'container-instructions3');">
+              <span class="glyphicon glyphicon-arrow-right"></span> Next
+              </button>
+          </center>
+
+	</div>
+	
+    <div id="container-instructions4" style="display:none; padding: 50px">
+            <h1> Game Goal & Structure </h1>
+            <hr>
+        <div class="instructions well">            
+			<h2> Your main goal is to recall as many words as you can across the entire experiment. </h2>
+            <p>
+                You will do this task in six trial blocks with a break in-between. Each block will be about 5 minutes long.
+            </p>
+			
+			<p>
+                
+				<br> The more words you recall, the higher your final compensation will be. Therefore, you should focus on maximizing your score within each block.
+				<br> You will also receive a small bonus for covering more categories. 
+            </p>
+			
+            <p>
+                <br> At any time, you can switch to a new category by pressing ENTER. If you feel you've run out of words, or are stuck, you should consider switching categories.
+                <br> However, each time you change categories, you will have to wait before the new category label appears. 
+           	  	<br> As such, there is a time penalty whenever you switch to a new category. 
+            </p>
+            
+        </div>
+        <hr>
+        <center>
+              <button type="button" class="btn btn-primary btn-lg" onClick="return show('container-instructions3', 'container-instructions4');">
+              <span class="glyphicon glyphicon-arrow-left"></span> Back 
+              </button>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <button type="button" class="btn btn-primary btn-lg" onClick="return show('container-instructions-flow', 'container-instructions4');">
+              <span class="glyphicon glyphicon-arrow-right"></span> Next
+              </button>
+          </center>
+
+	</div>
+	
+	<!-- container-isntructions-flow-->
+    <div id="container-instructions-flow" style="display:none; padding: 50px">
+        <h1>Example Screenshots</h1>
+        <hr>
+    	<div class="instructions well">    
+	        <p>
+	            Below are some example screenshots of different phases of the experiment
+	        </p>
+	        
+	        <div>
+	            <center>
+	                <img src="images/instruction_flow.png" alt="Instruction Image" style="width:60%">
+	            </center>
+	        </div>
+    	</div>
+    <hr>
+    <center>
+          <button type="button" class="btn btn-primary btn-lg" onClick="return show('container-instructions3', 'container-instructions-flow');">
+          <span class="glyphicon glyphicon-arrow-left"></span> Back 
+          </button>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <button type="button" class="btn btn-primary btn-lg" onClick="return show('container-info', 'container-instructions-flow');">
+          <span class="glyphicon glyphicon-arrow-right"></span> Next
+          </button>
+      </center>
+    </div>
+	
+
+    <!-- Initial Form for basic information 
+    **TODO** Update questions accordingly to what kinds of information you require-->
+    <div id="container-info" style="display:none">
+      <!-- CHANGE INDEX.JS CHECKINFO() IF MODIFIED -->
+      <h1>Basic Information</h1>
+      <hr>
+
+      <form id='infoform'>
+          <div class="row question">
+			  
+              <div class="questions" id="condition">
+                  Condition file: 
+                  <select id="condition" name="condition">
+                      <option value=""></option>
+                      <!-- <option value="short_blocks_config_new.json">order1</option> -->
+                      <option value="category_order_from_pilot1.json">order1</option>
+                      <option value="category_order_from_pilot2.json">order2</option>
+                  </select>
+              </div>
+			  
+              <div class="questions" id="email">
+                  Prolific WorkerID: 
+                  <input id="email-input" type="text" name="email" value="">
+              </div>
+            
+			
+              <div class="questions" id="age">
+                  Age: 
+                  <input id="age" type="text" name="age" value="">
+              </div>
+
+              <div class="questions" id="sex">
+                  Gender: 
+                  <select id="gender" name="gender">
+                      <option value=""></option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="other">Genderqueer/Non-Binary</option>
+                  </select>
+              </div>
+
+              <div class="questions" id="handedness">
+                    Right or left handed: 
+                <select id="hand" name="hand">
+                    <option value=""></option>
+                    <option value="righth">Right</option>
+                    <option value="lefth">Left</option>
+                    <option value="bothh">Ambidextrous</option>
+                </select>
+              </div>
+
+            <div class="questions" id="returner">
+                Have you done our experiments before? 
+                <select id="repeat" name="repeater">
+                    <option value=""></option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                    <option value="idk">I don't remember</option>
+                </select>
+            </div>
+            <hr>
+
+            <p>
+                The following information is requested by the National Institute of Health. You are not <em>required</em>, but are encouraged to complete these.
+            </p>
+            
+            <div class="questions" id="ethnicity">
+                Ethnic Origin:  
+                <select id="ethnic" name="ethnic">
+                    <option value="">
+                    <option value="hispanic">Hispanic or Latino</option>
+                    <option value="non-hispanic">Not Hispanic or Latino</option>
+                </select>
+            </div>
+
+            <div class="questions" id="racial origin">
+                Racial Origin:  
+                <select id="race" name="race">
+                    <option value="">
+                    <option value="indian/native">American Indian or Alaskan Native</option>
+                    <option value="asian">Asian</option>
+                    <option value="african-american">Black or African American</option>
+                    <option value="pacific-islander">Native Hawaiian or Other Pacific Islander</option>
+                    <option value="white">White or Caucasian</option>
+                    <option value="multiple">More than one race</option>
+                    <option value="unkown">Unknown</option>
+                </select>
+            </div>
+
+          </div>
+        </form>
+        <hr>
+        <center>
+            <button type="button" id="back" value="back" class="btn btn-primary btn-lg previous" onClick="show('container-instructions6', 'container-info');">
+            <span class="glyphicon glyphicon-arrow-left"></span> Back 
+            </button>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" id="begin" value="next" class="btn btn-primary btn-lg continue" onClick="checkInfo();">
+                Begin Experiment <span class="glyphicon glyphicon-arrow-right"></span>
+            </button>
+        </center>
+    </div>
+
+    <!-- Game page -->
+    <div id="container-exp" style="display:none">
+    </div>
+	
+	<!-- End Block -->
+	<div id = "container-end-block" style = "display:none">
+		<h1> End Block <h2>
+	</div> 
+ 		
+	
+    <!-- Thank you page 
+        **TODO** Update the completion code if necessary-->
+    <div id="container-not-an-ad" style="display:none">
+            <div class="media-left pull-left" href="#">
+                    <!-- REPLACE THE LOGO HERE WITH YOUR  UNIVERSITY, LAB, or COMPANY -->
+                    <img id="adlogo" src="images/university.png" alt="Lab Logo" />
+        </div>
+        <div class="media-body">
+            <h1>Thanks for your participation!</h1>
+            <hr />
+
+            <h2>Now just one more question and you're done!</h2>
+            
+            <form id="feedbackForm">
+                <div class="question" id="feedback">
+                    Are you a native English speaker?
+                    <input id="feedback" type="text" name="feedback" value="">
+                </div>
+            </form>
+            <center>
+                <!-- <h1><b><em>Please enter fullscreen mode before you begin.</em></b></h1> //only for safari
+                <hr> -->
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button type="button" id="end" value="final" onClick="saveFeedback();">
+                    Submit 
+                </button>
+            </center>
+            <h2>If you do not receive compensation in 5 business days please email ivrylab@colorado.edu.</h2>
+            <!-- <h2>Your completion code is: "BB922D14".</h2> -->
+            <h2>Thank you for participating!</h2>
+        </div>
+    </div>
+
+    <!-- Ended early page -->
+    <div id="container-failed" style="display:none">
+        <div class="media-left pull-left" href="#">
+                <!-- **TODO** REPLACE THE LOGO HERE WITH YOUR  UNIVERSITY, LAB, or COMPANY -->
+                <img id="adlogo" src="images/university.png" alt="Lab Logo" />
+        </div>
+        <div class="media-body">
+                    <h1>Oh no!</h1>
+                    <hr />
+                    <p>If you are seeing this page it means you did not pass an attention or understanding task.</p>
+                    <p>This task requires your full attention, thus we kindly ask you to exit and return this HIT.</p>
+                    <p>We're sorry for this inconvenience.</p>
+                    <!--
+                    <h2>You have a wonderful life now.</h2>
+                    -->
+        </div>
+    </div>
+
+    <!-- Final Page -->
+    <div id="final-page" style="display:none">
+        <div class="media-left pull-left" href="#">
+                <!-- **TODO** REPLACE THE LOGO HERE WITH YOUR  UNIVERSITY, LAB, or COMPANY -->
+                <img id="adlogo" src="images/university.png" alt="Lab Logo" />
+        </div>
+        <div class="media-body">
+            <button onclick="show('container-not-an-ad', 'container-exp')">Switch Pages</button>
+            <h1>Your responses has been saved, thank you!</h1>
+            <hr />
+        </div>
+    </div>
+   </main>
+  </body>
+
+  <script src="static/lib/jquery-min.js"></script>
+  <script src="static/lib/bootstrap.min.js"></script>
+  <script src="static/lib/d3.v3.min.js"></script>
+  <script src="static/lib/underscore-min.js"></script>
+  <script src="static/lib/backbone-min.js"></script>
+
+  <!--<script src="https://unpkg.com/compromise"></script> -->
+  <script src="browser_backup.js"></script>
+  <script src="firebase_backup_integration.js"></script>
+  <script src="local_sink_client.js"></script>
+  <script src="disk_writer.js"></script>
+<script src="index_fluency.js"></script>

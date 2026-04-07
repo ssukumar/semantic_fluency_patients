@@ -1,0 +1,9 @@
+{
+  "firestore_collections": ["Subjects", "Trials"],
+  "storage_folders": {
+    "audio-recordings": "audio",
+    "transcripts": "transcripts"
+  },
+  "backup_retention_days": 30,
+  "include_raw_json": true
+}
