@@ -285,7 +285,8 @@ var timeleft;
 
 // time per block 
 var timecount = 15 * 60 * 1000;
-var timepractice = 3 * 60 * 1000;
+var totalPracticeTime = 5 * 60 * 1000;  // 5-minute shared budget across all practice trials
+var practiceStartTime = null;            // set once when the first practice trial begins
 var isInDelay = false;
 var switchTime;
 var scoreTime;
@@ -1009,14 +1010,19 @@ function practicetrial() {
     svgContainer.select("#time").attr("display", "block");
     svgContainer.select("#total").attr("display", "block");
     stoptimer = false;
+    // Start the shared 5-minute clock on the very first practice trial
+    if (practiceStartTime === null) {
+        practiceStartTime = Date.now();
+    }
     startRecording();
 
-    d3.timer(function(elapsed){
+    d3.timer(function(){
         if (stoptimer) {
             return true;
         }
 
-        timeleft = Math.max(0, timepractice - elapsed);
+        // Use a single shared clock so all practice trials share the 5-minute budget
+        timeleft = Math.max(0, totalPracticeTime - (Date.now() - practiceStartTime));
         let minutes = Math.floor(timeleft / (1000 * 60)); 
         let seconds = Math.floor((timeleft % (1000 * 60)) / 1000);
 
@@ -1031,10 +1037,11 @@ function practicetrial() {
         svgContainer.select("#total")
             .text('Total Score: ' + totalscore);
 
-        // End the timer if time is up
+        // End practice entirely when the 5-minute budget is exhausted
         if (timeleft <= 0) {
             stoptimer = true;
             svgContainer.select("#practice" + practiceTrial).attr("display", "none");
+            practiceTrial = 5; // force nextpractice() to exit practice phase
             svgContainer.select("#enter").attr("display", "none");
             svgContainer.select("#time").attr("display", "none");
             svgContainer.select("#total").attr("display", "none");
@@ -1064,6 +1071,9 @@ function startPATATest(trialNum) {
 function runPATATimer(trialNum) {
     pataReady = false;
     pataRunning = true;
+
+    // Tag the recording so it gets a meaningful filename
+    categoryname = 'pata-trial-' + trialNum;
 
     // Hide instructions, show GO
     svgContainer.select("#pata_instructions").attr("display", "none");
@@ -1375,10 +1385,10 @@ function showMoney() {
     subjTrials.money = money;
 
     svgContainer.select("#money")
-        .attr("display", "block")
+        .attr("display", "none")
         .text('You have earned $' + money + ' !');
 
-    setTimeout(startDelay, 1000);
+    setTimeout(startDelay, 0);
     
 }
 
@@ -1531,8 +1541,9 @@ function startRecording() {
             };
             mediaRecorder.onstop = () => {
                 let audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                if (gamephase >= 3) {
-                    uploadAudio(audioBlob);  // Upload the recorded audio
+                // Upload for both PATA trials (gamephase 0 / 0.5) and main task (gamephase >= 3)
+                if (gamephase >= 3 || gamephase === 0 || gamephase === 0.5) {
+                    uploadAudio(audioBlob);
                 }
                 console.log('Recording stopped');
             };
@@ -1668,12 +1679,12 @@ function nextpractice(){
     isInDelay = false;
     practiceTrial++;
 
-    if (practiceTrial > 4) {
-        // All 4 practice trials done — show post-practice instructions screen
+    // End practice if all trials done OR if the 5-minute budget is used up
+    if (practiceTrial > 4 || (practiceStartTime !== null && Date.now() - practiceStartTime >= totalPracticeTime)) {
         gamephase = 2;
         startTrial();
     } else {
-        // More practice trials remaining
+        // More practice trials remaining and time left in the budget
         gamephase = 1;
         practicetrial();
     }
