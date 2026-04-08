@@ -1094,6 +1094,8 @@ function runPATATimer(trialNum) {
                     svgContainer.select("#pata_between_trials").attr("display", "block");
                 } else {
                     gamephase = 0.75;
+                    svgContainer.select("#pata_instructions").attr("display", "none");
+                    svgContainer.select("#pata_screen_title").attr("display", "none");
                     svgContainer.select("#instruc1").attr("display", "block");
                     svgContainer.select("#instruc1_2").attr("display", "block");
                     svgContainer.select("#instruc2").attr("display", "block");
