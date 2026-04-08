@@ -1841,7 +1841,7 @@ function endBlock() {
 	svgContainer.select("#instruc1_end_block").attr("display", "block");
 	svgContainer.select("#instruc2").attr("display", "block") // press spacebar instruction
 	svgContainer.select("#money")
-	    .attr("display", "block")
+	    .attr("display", "none")
 	    .text('You have earned $' + money + ' !');
 	
  	// reset trial Number
@@ -1866,7 +1866,7 @@ function endGame() {
     $('html').css('background-color', 'white');
 
     svgContainer.select("#money")
-        .attr("display", "block")
+        .attr("display", "none")
         .text('You have earned $' + money + ' !');
 
     svgContainer.select("#delay").attr("display", "none");
