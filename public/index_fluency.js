@@ -294,6 +294,8 @@ var scoreTime;
 var gamephase = -1;
 var timer;
 var stoptimer;
+var blockTimerGeneration = 0; // incremented each time a new block timer is created; each d3 timer captures its own generation and self-stops if it no longer matches
+var blockTransitionInProgress = false; // guard against endBlock/endGame being called twice (e.g. d3 timer + pending nextTrial setTimeout)
 var pataRunning = false;
 var pataReady = false;
 var practiceTrial = 1;         // tracks which practice trial we're on (1–4)
@@ -1205,8 +1207,12 @@ function handleKeyPress(event) {
             score = 0;
             totalscore = 0;
             categoryStarted = true;
+            blockTimerGeneration++; // invalidate any previously running block d3 timer
+            var myGeneration = blockTimerGeneration;
+            blockTransitionInProgress = false;
     
             d3.timer(function(elapsed){
+                if (myGeneration !== blockTimerGeneration) { return true; } // stale timer from a previous block
                 timeleft = Math.max(0, timecount - elapsed);
                 let minutes = Math.floor(timeleft / (1000 * 60)); 
                 let seconds = Math.floor((timeleft % (1000 * 60)) / 1000);
@@ -1258,7 +1264,7 @@ function handleKeyPress(event) {
        
     }
 
-    else if (event.key === '1' && !isInDelay) {
+    else if (event.key === '1' && !isInDelay && (gamephase === 3 || gamephase === 6 || gamephase === 1)) {
         score++;
         totalscore++;
 
@@ -1693,6 +1699,13 @@ function nextpractice(){
 
 function nextTrial(){
 
+    // If endBlock/endGame already fired (e.g. the d3 timer elapsed while this
+    // setTimeout was pending in the travel delay), don't do anything further.
+    if (blockTransitionInProgress) {
+        console.log("nextTrial: block transition already in progress, skipping");
+        return;
+    }
+
     svgContainer.select("#category").attr("display", "none");
     svgContainer.select("#score").attr("display", "none");
     svgContainer.select("#enter").attr("display", "none");
@@ -1809,6 +1822,9 @@ function endEarly() {
 // Function that ends the furst block appropriately; mirroring the within subject design of physical foraging
 
 function endBlock() {
+    console.log("travel_time_index =", travel_time_index)
+	if (blockTransitionInProgress) { console.log("endBlock: already in transition, skipping"); return; }
+	blockTransitionInProgress = true;
 	// closeFullScreen();
 	console.log ("ENTERING endBlock Function")
     $('html').css('cursor', 'auto');
@@ -1845,6 +1861,7 @@ function endBlock() {
 	    .text('You have earned $' + money + ' !');
 	
  	// reset trial Number
+	blockTimerGeneration++; // invalidate the current block d3 timer immediately
 	gamephase = 5
 	totalscore = 0;
 	trial = 1;
@@ -1853,10 +1870,14 @@ function endBlock() {
 	categoryStarted = false
 	blockEnd = true;
 	travel_time_index += 1
+	// Re-attach key listener in case showMoney() removed it (e.g. timer fired during travel delay)
+	document.addEventListener('keydown', handleKeyPress);
 }
 
 // Function that ends the game appropriately after the experiment has been completed
 function endGame() {
+	if (blockTransitionInProgress) { console.log("endGame: already in transition, skipping"); return; }
+	blockTransitionInProgress = true;
 
     closeFullScreen();
 
