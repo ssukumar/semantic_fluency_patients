@@ -275,7 +275,8 @@ var categorylist = [];
 var usedcategory = [];
 var categoryStarted = false;
 var practiceEnd = false;
-var blockEnd = false; // flag set at the end of the first block 
+var blockEnd = false; // flag set at the end of the first block
+var blockNumber = 1;  // 1 = first block, 2 = second block; appended to subjTrials.id to prevent overwrites
 
 var score;
 var totalscore;
@@ -1229,7 +1230,8 @@ function handleKeyPress(event) {
                     stopRecording(); 
     
                     subjTrials.experimentID = experiment_ID;
-                    subjTrials.id = subject.id.concat(trial.toString());
+                    // subjTrials.id = subject.id.concat(trial.toString());
+                    subjTrials.id = subject.id.concat('_b', blockNumber.toString(), '_t', trial.toString());
                     subjTrials.name = subject.id;
                     screen_height = window.screen.availHeight;
                     screen_width = window.screen.availWidth;
@@ -1716,7 +1718,9 @@ function nextTrial(){
     svgContainer.select("#triangle").attr("display", "none");
 
     subjTrials.experimentID = experiment_ID;
-    subjTrials.id = subject.id.concat(trial.toString());
+    // subjTrials.id = subject.id.concat(trial.toString());
+    subjTrials.id = subject.id.concat('_b', blockNumber.toString(), '_t', trial.toString());
+    
     subjTrials.name = subject.id;
     screen_height = window.screen.availHeight;
     screen_width = window.screen.availWidth;
@@ -1861,6 +1865,7 @@ function endBlock() {
 	    .text('You have earned $' + money + ' !');
 	
  	// reset trial Number
+	blockNumber = 2;
 	blockTimerGeneration++; // invalidate the current block d3 timer immediately
 	gamephase = 5
 	totalscore = 0;
